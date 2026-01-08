@@ -62,56 +62,54 @@
 
 
 import flet as ft
-
+import datetime
 
 def main(page: ft.Page):
-    page.title = 'Мое первое приложение!'
+    page.title = 'My first Flet app'
     page.theme_mode = ft.ThemeMode.LIGHT
+    text_hello = ft.Text(value="HELLO WORLD", color=ft.Colors.BLUE)
 
-    text_hello = ft.Text(value='Hello world')
+    text_hello.value = 'Привет!'
 
-    def text_name(_):
+    def on_button_click(e):
         name = name_input.value.strip()
-
+        current_time = datetime.datetime.now().strftime("%Y:%m:%d - %H:%M:%S")
+        print(f"Пользователь ввел: {name}")
+        print(f"Время ввода: {current_time}")
         if name:
-            text_hello.color = None
-            text_hello.value = f'Hello {name}'
-            name_input.value = ""
+            current_time = datetime.datetime.now().strftime("%Y:%m:%d - %H:%M:%S")
+            text_hello.value = f'{current_time} - Здравствуйте, {name}!'
+            text_hello.color = ft.Colors.GREEN
+            name_input.value = None
         else:
-            text_hello.value = "Введите имя!"
+            text_hello.value = "Пожалуйста, введите имя!"
             text_hello.color = ft.Colors.RED
-
+            name_input.value = None
         page.update()
 
-    elevated_button = ft.ElevatedButton('send', on_click=text_name)
 
-    name_input = ft.TextField(label='Введите имя')
-
-    
-    def change_theme(_):
+    def toggle_theme(e):
         if page.theme_mode == ft.ThemeMode.LIGHT:
             page.theme_mode = ft.ThemeMode.DARK
-            theme_button.icon = ft.Icons.DARK_MODE
+            theme_button.icon = ft.Icons.LIGHT_MODE
         else:
             page.theme_mode = ft.ThemeMode.LIGHT
-            theme_button.icon = ft.Icons.LIGHT_MODE
-
+            theme_button.icon = ft.Icons.DARK_MODE
         page.update()
 
+    elevated_button = ft.ElevatedButton("ОТПРАВИТЬ", icon=ft.Icons.SEND, on_click=on_button_click)
+    name_input = ft.TextField(label='Введите ваше имя', on_submit=on_button_click)
+
     theme_button = ft.IconButton(
-        icon=ft.Icons.LIGHT_MODE,
-        on_click=change_theme,
-        tooltip="Сменить тему"
+        icon=ft.Icons.DARK_MODE,
+        tooltip="День / Ночь",
+        on_click=toggle_theme
     )
 
-    page.add(
-        text_hello,
-        name_input,
-        elevated_button,
-        theme_button
-    )
+    page.add(theme_button, text_hello, name_input, elevated_button)
 
 
 ft.app(target=main)
+
 
     
